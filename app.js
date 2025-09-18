@@ -1,11 +1,21 @@
     const API_URL = "https://jackbox-backend.onrender.com";
 
-
+    let submission_list = document.querySelector("#submissions")
+    let scores = document.querySelector("#scores")
 
     // Load submissions
     function loadSubmissions() {
       //the endpoint is at API_URL+/submissions
       //You should retrieve the submissions and put them in the ul 'submissions'
+      fetch(API_URL+'/submissions').then(function(response){
+        response.json().then(function(data){
+          let answer = document.createElement("li")
+          submission_list.append(answer)
+          answer.innerHTML = data
+          submission_list.innerHTML
+          console.log(data)
+        })
+      })
       
     }
 
@@ -13,7 +23,11 @@
     function loadScores() {
       //the endpoint is at API_URL+/scores
       //You should retrieve the submissions and put them in the ul 'scores'
-      
+      fetch(API_URL+"/scores").then(function(response){
+        response.json().then(function(data){
+          console.log(data)
+        })
+      })
     }
 
     // Handle form submission
@@ -21,7 +35,14 @@
       e.preventDefault();
       const team = document.getElementById("team").value;
       const answer = document.getElementById("answer").value;
-
+      let team_answer = "team="+encodeURIComponent(team);
+      team_answer += "&answer="+encodeURIComponent(answer);
+      fetch(API_URL+"/submit", {method:"POST", body:team_answer, header: {"Content-Type": "application/x-www-form-urlencoded"}}).then(function(response){
+        //response.json().then(function(team_answer){
+          console.log(team_answer)
+          loadSubmissions()
+        //})
+      })
       //post to the API_URL + /submit
       //use correct headers
       //api expects team and answer
