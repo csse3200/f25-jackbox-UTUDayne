@@ -12,7 +12,7 @@
           let answer = document.createElement("li")
           submission_list.append(answer)
           answer.innerHTML = data
-          submission_list.innerHTML
+          submission_list.innerHTML = response.name + response.answer
           console.log(data)
         })
       })
@@ -23,11 +23,17 @@
     function loadScores() {
       //the endpoint is at API_URL+/scores
       //You should retrieve the submissions and put them in the ul 'scores'
-      fetch(API_URL+"/scores").then(function(response){
-        response.json().then(function(data){
-          console.log(data)
+      fetch(API_URL+"/scores")
+      .then(response => response.json())
+        .then(data => {
+          const list = document.getElementById("scores");
+          list.innerHTML = "";
+          for (const team in data){
+            const li = document.createElement("li")
+            li.textContent = `${team}: ${data[team]} pts`;
+            list.appendChild(li); 
+          }
         })
-      })
     }
 
     // Handle form submission
@@ -35,20 +41,22 @@
       e.preventDefault();
       const team = document.getElementById("team").value;
       const answer = document.getElementById("answer").value;
-      let team_answer = "team="+encodeURIComponent(team);
-      team_answer += "&answer="+encodeURIComponent(answer);
-      fetch(API_URL+"/submit", {method:"POST", body:team_answer, header: {"Content-Type": "application/x-www-form-urlencoded"}}).then(function(response){
-        //response.json().then(function(team_answer){
-          console.log(team_answer)
-          loadSubmissions()
-        //})
+
+      fetch(API_URL+"/submit", {
+        method:"POST", body:JSON.stringify({team, answer}), header: {"Content-Type":"application/json"}
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          document.getElementById("answer").value = "";
+          loadSubmissions();
+        })
       })
       //post to the API_URL + /submit
       //use correct headers
       //api expects team and answer
       //after a successful fetch, loadSubmissions()
         
-    });
 
 
     /*
