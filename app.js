@@ -43,10 +43,10 @@
       const answer = document.getElementById("answer").value;
 
       fetch(API_URL+"/submit", {
-        method:"POST", body:JSON.stringify({team, answer}), header: {"Content-Type":"application/json"}
+        method:"POST", body:data, headers:{"Content-Type":"application/x-www-form-urlencoded"}
       })
         .then(response => response.json())
-        .then(data => {
+        .then(function(data) {
           console.log(data);
           document.getElementById("answer").value = "";
           loadSubmissions();
