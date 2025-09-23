@@ -7,16 +7,20 @@
     function loadSubmissions() {
       //the endpoint is at API_URL+/submissions
       //You should retrieve the submissions and put them in the ul 'submissions'
-      fetch(API_URL+'/submissions').then(function(response){
-        response.json().then(function(data){
-          let answer = document.createElement("li")
-          submission_list.append(answer)
-          answer.innerHTML = data
-          submission_list.innerHTML = response.name + response.answer
-          console.log(data)
+      fetch(API_URL + '/submissions')
+      .then(response => response.json())
+      .then(function(data) {
+        // Clear any previous submissions before loading new ones
+        submission_list.innerHTML = '';
+    
+        // Check if data is an object and iterate over its values
+        data.forEach(s => {
+          const li = document.createElement("li");
+          li.textContent = `${s.team}: ${s.answer}`;
+          submission_list.appendChild(li);
         })
-      })
-      
+        console.log(data);
+      });
     }
 
     // Load scores
@@ -41,9 +45,10 @@
       e.preventDefault();
       const team = document.getElementById("team").value;
       const answer = document.getElementById("answer").value;
-
+      let data = "team=" + team;
+      data += "&answer=" + answer;
       fetch(API_URL+"/submit", {
-        method:"POST", body:data, headers:{"Content-Type":"application/x-www-form-urlencoded"}
+        method:"POST", body:JSON.stringify(data), headers:{"Content-Type":"application/JSON"}
       })
         .then(response => response.json())
         .then(function(data) {
