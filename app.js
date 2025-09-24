@@ -45,8 +45,7 @@
       e.preventDefault();
       const team = document.getElementById("team").value;
       const answer = document.getElementById("answer").value;
-      let data = "team=" + team;
-      data += "&answer=" + answer;
+      let data = {"team": team, "answer": answer};
       fetch(API_URL+"/submit", {
         method:"POST", body:JSON.stringify(data), headers:{"Content-Type":"application/JSON"}
       })
